@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>File Upload/Download</title>
+    <!-- Add your CSS and JS links here if needed -->
+    
+    <link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+	crossorigin="anonymous">
+	
+ <link rel="stylesheet" href="style.css">
+ <link rel="stylesheet" href="https://unpkg.com/cornerstone-core/dist/cornerstone.min.css" />
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+     <style>
+        .btn-download {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-2">
+    <h1>Employee File Upload/Download</h1>
+
+    <!-- Employee information here -->
+    <p><strong>Employee ID:</strong> [[${employee.id}]]</p>
+    <p><strong>Employee Name:</strong> [[${employee.firstName}]] [[${employee.lastName}]]</p>
+    <!-- Add more employee information as needed -->
+    
+    
+    
+    <img th:if="${employee.fileUploaded}" th:src="@{'/displayImage/' + ${employee.id}}" alt="Employee Image" />
+
+    <!-- File Upload form -->
+    <form th:action="@{/uploadFile/{id}(id=${employee.id})}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <button type="submit" class="btn btn-primary">
+            <span th:if="${employee.fileUploaded}">Update File</span>
+            <span th:unless="${employee.fileUploaded}">Upload File</span>
+        </button>
+    </form>
+
+    <!-- File Download link -->
+    <a th:if="${employee.fileUploaded}" th:href="@{'/downloadFile/' + ${employee.id}}" class="btn btn-success btn-download">
+        <span class="glyphicon glyphicon-download"></span> Download File
+    </a>
+    <a th:unless="${employee.fileUploaded}">
+        <span class="glyphicon glyphicon-remove"></span> No File Available
+    </a>
+
+    <!-- Back button -->
+    <a th:href="@{/}" class="btn btn-primary mt-3">Back to Employee List</a>
+</div>
+
+  <!--
+    <div>
+        <h2>DICOM Image Viewer</h2>
+        <div>
+            <div class="viewportElement" style="width:512px;height:512px;"></div>
+        </div>
+    </div> 
+
+    <script src="https://unpkg.com/cornerstone-core/dist/cornerstone.js"></script>
+    <script src="https://unpkg.com/cornerstone-math/dist/cornerstoneMath.js"></script>
+    <script src="https://unpkg.com/cornerstone-tools/dist/cornerstoneTools.js"></script>
+    <script>
+        // Load and display DICOM image using Cornerstone.js
+         // Pass employeeId from Thymeleaf
+
+        const element = document.querySelector('.viewportElement');
+        cornerstone.enable(element);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `/getDicomImage/${employeeId}`, true);
+        xhr.responseType = 'arraybuffer';
+
+        xhr.onload = function() {
+            const byteArray = new Uint8Array(xhr.response);
+            const imageBlob = new Blob([byteArray], { type: 'application/dicom' });
+
+            const file = new File([imageBlob], 'image.dcm', { type: 'application/dicom' });
+            const imageId = cornerstoneWADOImageLoader.fileManager.add(file);
+
+            cornerstone.loadImage(imageId).then(image => {
+                cornerstone.displayImage(element, image);
+            });
+        };
+
+        xhr.send();
+    </script> 
+       
+       -->
+
+</body>
+</html>
